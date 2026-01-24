@@ -35,9 +35,7 @@ This is:
 
 All supported operations and composite expressions are verified using **numerical gradient checking**:
 
-\[
-\frac{df}{dx} \approx \frac{f(x+\epsilon) - f(x-\epsilon)}{2\epsilon}
-\]
+`df/dx ≈ (f(x + eps) - f(x - eps)) / (2 * eps)`
 
 Analytical gradients produced by the engine match numerical gradients within tolerance.
 
