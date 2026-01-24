@@ -1,0 +1,132 @@
+# Reverse-Mode Autograd Engine (Scalar)
+
+This project implements the same **reverse-mode autodiff principles** used in PyTorch, JAX, and TensorFlow, at a **scalar level**.
+
+The goal is to understand and reproduce the core mechanism used by modern deep learning frameworks, focusing on **correctness and clarity**, not performance or scale.
+
+---
+
+## What this implements
+
+- Dynamic computation graph (DAG) built during the forward pass
+- Reverse-mode automatic differentiation using post-order DFS
+- Explicit gradient accumulation
+- Operator overloading for natural math expressions
+- Zero-gradient handling
+- Numerical gradient checking (finite differences)
+
+This is:
+- not symbolic differentiation  
+- not numerical differentiation  
+- graph-based reverse-mode autodiff
+
+---
+
+## Core ideas
+
+- **Forward pass** builds the computation graph implicitly
+- **Backward pass** applies the chain rule in reverse topological order
+- Each operation contributes a local backward function
+- Gradients accumulate by default and must be reset explicitly
+
+---
+
+## Verification
+
+All supported operations and composite expressions are verified using **numerical gradient checking**:
+
+\[
+\frac{df}{dx} \approx \frac{f(x+\epsilon) - f(x-\epsilon)}{2\epsilon}
+\]
+
+Analytical gradients produced by the engine match numerical gradients within tolerance.
+
+---
+
+## Common Gradcheck Failures that i found while creating the project
+
+Numerical gradient checking is used to validate correctness.  
+When gradcheck fails, the *magnitude and sign* of the error usually indicate the bug.
+
+### Half of expected gradient
+- **Symptom:** autograd ≈ numerical / 2  
+- **Cause:** missing gradient accumulation  
+- **Bug:** using `=` instead of `+=` in backward functions
+
+---
+
+### Wrong sign
+- **Symptom:** correct magnitude, wrong sign  
+- **Cause:** operand order bug  
+- **Bug:** incorrect implementation of right-hand operators (e.g. `__rsub__`)
+
+---
+
+### Zero gradient
+- **Symptom:** autograd gradient is 0, numerical is non-zero  
+- **Cause:** missing gradient path  
+- **Bug:** missing `backward_fn` or forgetting to seed output gradient
+
+---
+
+### Gradients grow across runs
+- **Symptom:** gradients increase every gradcheck run  
+- **Cause:** stale accumulated gradients  
+- **Bug:** forgot to call `zero_grad` before backward
+
+---
+
+### Small numerical mismatch
+- **Symptom:** tiny difference (≈1e-8 to 1e-10)  
+- **Cause:** floating-point error  
+- **Bug:** none (expected for finite differences)
+
+---
+
+### Composite functions fail, simple ones pass
+- **Symptom:** single ops pass, composed expressions fail  
+- **Cause:** shared subgraph handling bug  
+- **Bug:** incorrect DFS traversal or accumulation logic
+
+---
+
+### Works once, fails on second run
+- **Symptom:** first gradcheck passes, second fails  
+- **Cause:** leaked traversal state  
+- **Bug:** `visited` / `order` stored persistently instead of per backward call
+
+---
+
+## Scope (v0.1)
+
+- Scalar reverse-mode autograd engine
+- Core ops: add, mul, neg, sub, pow, exp, log, sin
+- Operator surface with scalar lifting and right-hand ops
+- Gradient reset (`zero_grad`)
+- Numerical gradcheck
+
+---
+
+## Relation to Modern Frameworks
+
+This engine follows the same reverse-mode autodiff principles as PyTorch and JAX:
+- dynamic graph construction
+- reverse topological traversal
+- gradient accumulation
+- explicit gradient reset
+
+The implementation is intentionally scalar and minimal to focus on correctness.
+
+---
+
+## Next steps
+
+- Build a tiny neural network on top of this engine
+- Extend to multi-variable functions
+- tensor-based autograd as a separate project
+
+---
+
+## Why this exists
+
+This project is intended as a **learning and systems exercise** to deeply understand how autodiff engines work internally, rather than as a production library.
