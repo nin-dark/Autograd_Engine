@@ -5,7 +5,6 @@ def add(a, b):
         value = a.value + b.value,
         parents = (a,b)
     )
-    # Gradient Accumulation
     def backward():
         a.grad += out.grad * 1
         b.grad += out.grad * 1
@@ -17,7 +16,6 @@ def mul(a, b):
         value = a.value * b.value,
         parents = (a,b)
     )
-    # Gradient Accumulation
     def backward():
         a.grad += out.grad * b.value
         b.grad += out.grad * a.value
@@ -29,7 +27,6 @@ def neg(a):
         value = a.value * -1,
         parents= (a,)
     )
-    # Gradient Accumulation
     def backward():
         a.grad += out.grad * -1
     out.backward_fn = backward
@@ -40,7 +37,6 @@ def pow(a, n):
         value= a.value ** n,
         parents= (a,)
     )
-    # Gradient Accumulation
     def backward():
         a.grad += out.grad * (n * (a.value**(n-1)))
     out.backward_fn= backward
@@ -52,7 +48,6 @@ def exp(a):
         value= math.exp(a.value),
         parents= (a,)
     )
-    # Gradient accumulation
     def backward():
         a.grad += out.grad * out.value
     out.backward_fn = backward
@@ -64,7 +59,6 @@ def log(a):
         value= math.log(a.value),
         parents= (a,)
     )
-    # Gradient accumulation
     def backward(): 
         a.grad += out.grad * (1/a.value)
     out.backward_fn= backward
@@ -76,7 +70,6 @@ def sin(a):
         value= math.sin(a.value),
         parents= (a,)
     )
-    # Gradient accumulation
     def backward(): 
         a.grad += out.grad * math.cos(a.value)
     out.backward_fn = backward
