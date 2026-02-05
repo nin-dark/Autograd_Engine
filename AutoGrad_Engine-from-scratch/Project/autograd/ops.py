@@ -1,4 +1,4 @@
-from engine import Node
+from .engine import Node
 
 def add(a, b):
     out = Node(
@@ -121,3 +121,8 @@ def __pow__(self, other):
     return pow(self, other)
 
 Node.__pow__ = __pow__
+
+def __neg__(self):
+    return neg(self)
+
+Node.__neg__ = __neg__
