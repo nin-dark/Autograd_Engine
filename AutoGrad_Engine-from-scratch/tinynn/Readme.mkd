@@ -1,0 +1,69 @@
+# Tiny Neural Network from Scratch
+
+This project implements a tiny neural network built entirely on top of a custom **reverse-mode autodiff engine (scalar-based)**.
+
+The goal of this project is not performance — it is understanding how backpropagation actually works under the hood.
+
+All detailed explanations and step-by-step derivations are documented inside the Jupyter notebook.
+
+---
+
+## What This Project Covers
+
+### Phase 1 — Single Neuron (1 → 1)
+- Model: `y = wx + b`
+- Mean Squared Error loss
+- Manual gradient verification
+- Reverse-mode autodiff validation
+- Proper gradient lifecycle (`zero_grad → backward → update`)
+
+---
+
+### Phase 2 — Multi-Input Neuron (2 → 1)
+- Model: `y = w1x1 + w2x2 + b`
+- Gradient accumulation across multiple branches
+- Dataset training using SGD
+- Dimension safety checks
+- Neuron class abstraction
+
+---
+
+### Phase 3 — Hidden Layer Network (2 → 3 → 1)
+Architecture:
+
+Input (2) → Linear (2 → 3) → ReLU → Linear (3 → 1) → MSE Loss
+
+- Layer abstraction
+- ReLU activation with custom backward rule
+- Backpropagation through depth
+- Random initialization to break symmetry
+- Observation of dead neurons
+- Convergence using SGD
+
+---
+
+## Key Concepts Explored
+
+- Reverse-mode autodiff
+- Computational graph construction
+- Gradient accumulation using `+=`
+- Chain rule through depth
+- ReLU gradient gating
+- Why random initialization matters
+- Why reverse-mode is efficient for neural networks
+
+---
+
+## Purpose
+
+This project is part of a learning journey to move from:
+
+> *Using neural networks*  
+to  
+> *Understanding how they work internally*
+
+---
+
+## Author
+
+Built as a hands-on exploration of backpropagation and gradient flow from first principles.
