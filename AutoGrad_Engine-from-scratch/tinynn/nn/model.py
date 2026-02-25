@@ -1,10 +1,10 @@
-from .layer import Layer
+from .layer import layer
 from .activations import relu
 
 class TinyNN:
     def __init__(self):
-        self.hidden = Layer(2, 3)
-        self.output = Layer(3, 1)
+        self.hidden = layer(2, 3)
+        self.output = layer(3, 1)
 
     def forward(self, x):
         h = self.hidden.forward(x)

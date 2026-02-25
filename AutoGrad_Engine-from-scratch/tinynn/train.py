@@ -1,5 +1,5 @@
 from autograd.engine import backward, zero_grad
-from tinynn.nn import TinyNN
+from nn import TinyNN
 
 dataset = [
     (2, 3, 16),

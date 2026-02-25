@@ -2,13 +2,13 @@ from autograd import Node
 
 def relu(node):
     out = Node(
-        max(0, node.value),
-        parents=(node,)
+        value = max(0, node.value),
+        parents = (node,),
     )
-
-    def _backward():
+    def backward():
         if node.value > 0:
             node.grad += out.grad
-
-    out._backward = _backward
+        else:
+            node.grad += 0
+    out.backward_fn = backward
     return out
